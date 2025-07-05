@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test - Feed API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+        }
+        .auth-section {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        input[type="email"], input[type="password"] {
+            width: 200px;
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 CORS Test - Feed API</h1>
+        <p>This page tests CORS functionality with your Feed API running on <strong>http://localhost:3000</strong></p>
+        
+        <!-- Authentication Section -->
+        <div class="test-section auth-section">
+            <h3>🔐 Authentication</h3>
+            <div>
+                <input type="email" id="email" placeholder="Email" value="quick@test.com">
+                <input type="password" id="password" placeholder="Password" value="QuickTest123!">
+                <button onclick="login()">Login</button>
+                <button onclick="logout()">Logout</button>
+            </div>
+            <div id="auth-status">Not logged in</div>
+        </div>
+
+        <!-- Public API Tests -->
+        <div class="test-section">
+            <h3>📊 Public API Tests (No Auth Required)</h3>
+            <button onclick="testTrendingFeed()">Test Trending Feed</button>
+            <button onclick="testCategories()">Test Categories</button>
+            <button onclick="testHealthCheck()">Test Health Check</button>
+            <div id="public-results" class="response"></div>
+        </div>
+
+        <!-- Authenticated API Tests -->
+        <div class="test-section">
+            <h3>🔒 Authenticated API Tests</h3>
+            <button onclick="testPersonalizedFeed()">Test Personalized Feed</button>
+            <button onclick="testFashionFeed()">Test Fashion Feed</button>
+            <button onclick="testFollowStore()">Test Follow Store</button>
+            <button onclick="testUserPreferences()">Test User Preferences</button>
+            <div id="auth-results" class="response"></div>
+        </div>
+
+        <!-- CORS Error Tests -->
+        <div class="test-section">
+            <h3>⚠️ CORS Error Tests</h3>
+            <button onclick="testCORSPreflight()">Test CORS Preflight</button>
+            <button onclick="testInvalidOrigin()">Test Invalid Origin (Will Fail)</button>
+            <div id="cors-results" class="response"></div>
+        </div>
+
+        <!-- Feed Display -->
+        <div class="test-section">
+            <h3>📱 Feed Display</h3>
+            <button onclick="loadAndDisplayFeed()">Load & Display Feed</button>
+            <div id="feed-display"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api/v1';
+        let authToken = null;
+
+        // Authentication Functions
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.accessToken) {
+                    authToken = data.accessToken;
+                    document.getElementById('auth-status').innerHTML = 
+                        `✅ Logged in as: ${email}<br>Token: ${authToken.substring(0, 20)}...`;
+                    document.getElementById('auth-status').className = 'success';
+                } else {
+                    throw new Error('No token received');
+                }
+            } catch (error) {
+                document.getElementById('auth-status').innerHTML = `❌ Login failed: ${error.message}`;
+                document.getElementById('auth-status').className = 'error';
+            }
+        }
+
+        function logout() {
+            authToken = null;
+            document.getElementById('auth-status').innerHTML = 'Not logged in';
+            document.getElementById('auth-status').className = '';
+        }
+
+        // Public API Tests
+        async function testTrendingFeed() {
+            try {
+                const response = await fetch(`${API_BASE}/feed/trending`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                document.getElementById('public-results').textContent = 
+                    `✅ Trending Feed: ${data.data.count} products\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('public-results').textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testCategories() {
+            try {
+                const response = await fetch(`${API_BASE}/feed/categories`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                document.getElementById('public-results').textContent = 
+                    `✅ Categories: ${data.data.categories.length} available\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('public-results').textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testHealthCheck() {
+            try {
+                const response = await fetch(`${API_BASE}/feed/health`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                document.getElementById('public-results').textContent = 
+                    `✅ Health: ${data.data.status}\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('public-results').textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Authenticated API Tests
+        async function testPersonalizedFeed() {
+            if (!authToken) {
+                document.getElementById('auth-results').textContent = '❌ Please login first';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/feed/personalized`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                document.getElementById('auth-results').textContent = 
+                    `✅ Personalized Feed: ${data.data.count} products\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('auth-results').textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testFashionFeed() {
+            if (!authToken) {
+                document.getElementById('auth-results').textContent = '❌ Please login first';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/feed/personalized?category=fashion`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                document.getElementById('auth-results').textContent = 
+                    `✅ Fashion Feed: ${data.data.count} products\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('auth-results').textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testFollowStore() {
+            if (!authToken) {
+                document.getElementById('auth-results').textContent = '❌ Please login first';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/feed/follow-store`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ storeId: '6855409cffbc30794fb9aed9' })
+                });
+                const data = await response.json();
+                document.getElementById('auth-results').textContent = 
+                    `✅ Follow Store: ${data.message}\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('auth-results').textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testUserPreferences() {
+            if (!authToken) {
+                document.getElementById('auth-results').textContent = '❌ Please login first';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/feed/preferences`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                document.getElementById('auth-results').textContent = 
+                    `✅ User Preferences: ${data.data.followedStores.length} followed stores\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                document.getElementById('auth-results').textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // CORS Tests
+        async function testCORSPreflight() {
+            try {
+                const response = await fetch(`${API_BASE}/feed/trending`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Authorization'
+                    }
+                });
+                document.getElementById('cors-results').textContent = 
+                    `✅ CORS Preflight: ${response.status} ${response.statusText}\nHeaders: ${JSON.stringify([...response.headers.entries()], null, 2)}`;
+            } catch (error) {
+                document.getElementById('cors-results').textContent = `❌ CORS Error: ${error.message}`;
+            }
+        }
+
+        async function testInvalidOrigin() {
+            document.getElementById('cors-results').textContent = 
+                `ℹ️ This test simulates an invalid origin. In a real browser, this would be blocked by CORS policy.\nCheck the browser console for CORS errors.`;
+        }
+
+        // Feed Display
+        async function loadAndDisplayFeed() {
+            try {
+                const response = await fetch(`${API_BASE}/feed/trending`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                const feedDisplay = document.getElementById('feed-display');
+                feedDisplay.innerHTML = '<h4>📱 Trending Products</h4>';
+                
+                data.data.products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <h5>${product.title}</h5>
+                        <p><strong>Category:</strong> ${product.category}</p>
+                        <p><strong>Price:</strong> ${product.price.currency} ${product.price.original}</p>
+                        <p><strong>Store:</strong> ${product.store.name}</p>
+                        ${product._trendingScore ? `<p><strong>Trending Score:</strong> ${product._trendingScore}</p>` : ''}
+                    `;
+                    feedDisplay.appendChild(productCard);
+                });
+            } catch (error) {
+                document.getElementById('feed-display').innerHTML = `❌ Error loading feed: ${error.message}`;
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            console.log('🌐 CORS Test Page Loaded');
+            console.log('API Base URL:', API_BASE);
+            console.log('Current Origin:', window.location.origin);
+            
+            // Test basic connectivity
+            testHealthCheck();
+        };
+    </script>
+</body>
+</html>

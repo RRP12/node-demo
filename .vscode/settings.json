@@ -1,0 +1,16 @@
+
+{
+  "mcpServers": {
+    "Sequential thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "MongoDB": {
+      "command": "npx",
+      "args": ["-y", "mcp-mongo-server"],
+      "env": {
+        "MCP_MONGODB_URI": "mongodb://localhost:27017/yupp"
+      }
+    }
+  }
+}

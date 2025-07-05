@@ -1,0 +1,235 @@
+GET http://localhost:3000/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJnc21pdGgiLCJpYXQiOjE3MDAyNjU1MTEsImV4cCI6MTcwMDI2NTU0MX0.gx-VqIe6fJyWowpgSMBdBMapl6Q82tWkVbF32qL-W_c
+
+###
+
+POST http://localhost:3000/api/v1/auth/token
+Content-Type: application/json
+
+{
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAzMTYxNTh9.f4MmLa8JMPeDrs3C8BEstVOgYVoVzr3NzzRlnA2ZVIo"
+}
+
+###
+
+DELETE  http://localhost:3000/api/v1/auth/logout
+Content-Type: application/json
+
+{
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAyODI3NjV9.IHC4QVTIulyHztbwdVjVakw5WRd5huRoz9NuO7yH8MY"
+}
+
+### Managing users
+GET http://localhost:3000/api/v1/auth/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMyYWJmMzYzZWY1ZDQ3YjZmYzM2YSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAyODI2NjcsImV4cCI6MTc1MDI4MjY3N30.I9NvBs_OOdGlG8MIKFs3-BftL8u-b9e7kpjDvHphhZA
+
+###
+
+POST http://localhost:3000/api/v1/auth/users
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "password": "herSecurePassword!123",
+  "role": "seller",
+  "profileImage": "https://example.com/path/to/profile.jpg",
+  "bio": "Experienced seller specializing in handmade crafts."
+}
+
+
+
+###
+
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "jane.doe@example.com",
+  "password": "herSecurePassword!123"
+}
+
+### Test endpoint - Token Verification (Valid Token)
+// ...existing code...
+
+### Test endpoint - Update User (Valid Token)
+// ...existing code...
+
+### Test endpoint - Get All Users (Valid Token)
+// ...existing code...
+### Test endpoint - Get All Users (Valid Token)
+GET http://localhost:3000/api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAzMTg2MDksImV4cCI6MTc1MDMxODYzOX0.VYvyggcam8agsz5P_VBvyycSQnBiW3zdLyf__RVO0wY
+
+### Test endpoint - Get User by ID (Valid Token)
+GET http://localhost:3000/api/v1/users/685331fab98c2ae1a2093799
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAzMTg2MDksImV4cCI6MTc1MDMxODYzOX0.VYvyggcam8agsz5P_VBvyycSQnBiW3zdLyf__RVO0wY
+
+### Create Store (Seller Only)
+POST http://localhost:3000/api/v1/stores/create-store
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAzMjg1MTAsImV4cCI6MTc1MDMyODU0MH0.u1yR1ec7fsDdCByngVxL03vMcMs8Q2sgk631esvy8K8
+
+{
+  "name": "Jane's Handmade Shop",
+  "description": "A store for handmade crafts."
+}
+
+### Add Product to Store (Seller Only)
+POST http://localhost:3000/api/v1/products/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAzMzAzNDIsImV4cCI6MTc1MDMzMDM3Mn0.V2E4iPXniNuIrCR7jsfyxxY_tNakyqpkHBk-tnKjeSM
+
+{
+  "title": "Handmade Mug",
+  "slug": "handmade-mug",
+  "description": "A beautiful handmade ceramic mug.",
+  "store": "6853e4c8ae49521cbe34631f",
+  "category": "Home & Kitchen",
+  "subCategory": "Mugs",
+  "tags": ["ceramic", "handmade", "mug"],
+  "collection": "Summer 2025",
+  "price": {
+    "original": 499,
+    "discounted": 399,
+    "currency": "INR"
+  },
+  "stock": {
+    "totalQuantity": 100,
+    "variants": [
+      { "sku": "MUG-BLUE-001", "size": "350ml", "color": "Blue", "quantity": 50, "image": "https://example.com/mug-blue.jpg" },
+      { "sku": "MUG-RED-001", "size": "350ml", "color": "Red", "quantity": 50, "image": "https://example.com/mug-red.jpg" }
+    ]
+  },
+  "media": {
+    "images": ["https://example.com/mug-main.jpg"],
+    "reels": []
+  },
+  "isPublished": true,
+  "isNewArrival": true,
+  "isFeatured": false
+}
+
+### Edit Product (Seller Only)
+PUT http://localhost:3000/api/v1/products/edit/6853ebf23d34ae5567307956
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAzMzEyMjUsImV4cCI6MTc1MDMzMTI1NX0.fl747ur8gk0lsobvL5xUKoyvy3e2lCVS-f33R-14r24
+
+{
+  "title": "Updated Handmade Mug",
+  "price": {
+    "original": 599,
+    "discounted": 499,
+    "currency": "INR"
+  },
+  "isFeatured": true
+}
+
+###############################################################################
+# 📱 FEED API ENDPOINTS (Mobile-First, No Pagination)
+###############################################################################
+
+### Get All Fashion Products
+GET http://localhost:3000/api/v1/feed/personalized?category=fashion
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NTg0Y2YxOWUxYWEzYzZlYzRlMWM1ZiIsImVtYWlsIjoiamFuZS5kb2VAZXhhbXBsZS5jb20iLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUxMDMxMDI2LCJleHAiOjE3NTEwMzE5MjZ9.YDzDbQr5wixsc6JbCKXCLI0QWZFp3lyadUnxdApDN54
+
+### Get Electronics with Reels Only
+GET http://localhost:3000/api/v1/feed/personalized?category=electronics&reelsOnly=true
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NTg0Y2YxOWUxYWEzYzZlYzRlMWM1ZiIsImVtYWlsIjoiamFuZS5kb2VAZXhhbXBsZS5jb20iLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUwNzQ5Mzk3LCJleHAiOjE3NTA3NTAyOTd9.-MWek1CbaIrghJa4VAFapR3sy694UKf-BSlJJLDvzQY
+
+### Get Trending Products Near User (Location-Based)
+GET http://localhost:3000/api/v1/feed/personalized?sortBy=trending&lat=19.0760&lng=72.8777
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NTg0Y2YxOWUxYWEzYzZlYzRlMWM1ZiIsImVtYWlsIjoiamFuZS5kb2VAZXhhbXBsZS5jb20iLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUwNzQ5Mzk3LCJleHAiOjE3NTA3NTAyOTd9.-MWek1CbaIrghJa4VAFapR3sy694UKf-BSlJJLDvzQY
+
+### Get All Products (No Filter)
+GET http://localhost:3000/api/v1/feed/personalized
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NTg0Y2YxOWUxYWEzYzZlYzRlMWM1ZiIsImVtYWlsIjoiamFuZS5kb2VAZXhhbXBsZS5jb20iLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUxMDMyMjc2LCJleHAiOjE3NTEwMzMxNzZ9.dp8ijKRBPbky14A5u8XQ53e9xvl8ADADZjqXE0Rzx7E
+
+### Get Trending Feed (Public - No Auth Required)
+GET http://localhost:3000/api/v1/feed/trending
+Content-Type: application/json
+
+### Get User's Current Profile (/me endpoint)
+GET http://localhost:3000/api/v1/auth/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAzMzEyMjUsImV4cCI6MTc1MDMzMTI1NX0.fl747ur8gk0lsobvL5xUKoyvy3e2lCVS-f33R-14r24
+
+### Follow a Store
+POST http://localhost:3000/api/v1/feed/follow-store
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAzMzEyMjUsImV4cCI6MTc1MDMzMTI1NX0.fl747ur8gk0lsobvL5xUKoyvy3e2lCVS-f33R-14r24
+
+{
+  "storeId": "6853e4c8ae49521cbe34631f"
+}
+
+### Get Available Categories
+GET http://localhost:3000/api/v1/feed/categories
+Content-Type: application/json
+
+### CQRS Health Check
+GET http://localhost:3000/api/v1/feed/health
+Content-Type: application/json
+
+###############################################################################
+
+### Delete Product (Seller Only)
+DELETE http://localhost:3000/api/v1/products/delete/<PASTE_PRODUCT_OBJECT_ID_HERE>
+Authorization: Bearer <PASTE_A_VALID_SELLER_ACCESS_TOKEN_HERE>
+
+### Media Upload (Image or Video)
+POST http://localhost:3000/api/v1/media/upload
+Content-Type: multipart/form-data
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhbm90aGVyX3VuaXF1ZV9pZF8xMjMiLCJpZCI6IjY4NTMzMWZhYjk4YzJhZTFhMjA5Mzc5OSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NTAzMzQyNzEsImV4cCI6MTc1MDMzNDMwMX0.re-gdyaVDR8c897bCNXC_45IoN2vkhdbDGGc_mat0Es
+
+media=@/Users/rushikeshpatil/Downloads/SampleVideo_720x480_10mb.mp4;type=video/mp4
+
+###
+// After upload, use the returned URL(s) in your product creation request as shown below:
+
+### Add Product to Store (Seller Only)
+POST http://localhost:3000/api/v1/products/add
+Content-Type: application/json
+Authorization: Bearer <PASTE_A_VALID_SELLER_ACCESS_TOKEN_HERE>
+
+{
+  "title": "Handmade Mug",
+  "slug": "handmade-mug",
+  "description": "A beautiful handmade ceramic mug.",
+  "store": "<PASTE_STORE_OBJECT_ID_HERE>",
+  "category": "Home & Kitchen",
+  "subCategory": "Mugs",
+  "tags": ["ceramic", "handmade", "mug"],
+  "collection": "Summer 2025",
+  "price": {
+    "original": 499,
+    "discounted": 399,
+    "currency": "INR"
+  },
+  "stock": {
+    "totalQuantity": 100,
+    "variants": [
+      { "sku": "MUG-BLUE-001", "size": "350ml", "color": "Blue", "quantity": 50, "image": "https://example.com/mug-blue.jpg" },
+      { "sku": "MUG-RED-001", "size": "350ml", "color": "Red", "quantity": 50, "image": "https://example.com/mug-red.jpg" }
+    ]
+  },
+  "media": {
+    "images": ["https://example.com/mug-main.jpg"],
+    "reels": [
+      {
+        "url": "<PASTE_UPLOADED_VIDEO_URL_HERE>",
+        "thumbnail": "<PASTE_UPLOADED_THUMBNAIL_URL_HERE>",
+        "caption": "My new reel!"
+      }
+    ]
+  },
+  "isPublished": true,
+  "isNewArrival": true,
+  "isFeatured": false
+}
+
+###

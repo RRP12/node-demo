@@ -1,0 +1,46 @@
+// categories.js
+module.exports = {
+  STORE_CATEGORIES: [
+    "fashion",
+    "beauty",
+    "electronics",
+    "home-decor",
+    "food-and-beverage",
+    "kids-and-baby",
+    "pets",
+    "fitness",
+    "art-and-collectibles",
+    "others",
+  ],
+  PRODUCT_SUBCATEGORIES: {
+    fashion: [
+      "t-shirts",
+      "jeans",
+      "outerwear",
+      "footwear",
+      "dresses",
+      "accessories",
+    ],
+    beauty: ["skincare", "makeup", "haircare", "fragrances", "tools"],
+    electronics: ["smartphones", "laptops", "accessories", "gaming", "audio"],
+    "home-decor": ["furniture", "lighting", "textiles", "wall-art", "storage"],
+    "food-and-beverage": [
+      "snacks",
+      "beverages",
+      "organic",
+      "specialty",
+      "cooking",
+    ],
+    "kids-and-baby": ["toys", "clothing", "feeding", "safety", "education"],
+    pets: ["food", "toys", "accessories", "health", "grooming"],
+    fitness: ["equipment", "apparel", "supplements", "accessories", "outdoor"],
+    "art-and-collectibles": [
+      "paintings",
+      "sculptures",
+      "vintage",
+      "handmade",
+      "digital",
+    ],
+    others: ["miscellaneous", "custom", "unique", "specialty"],
+  },
+}

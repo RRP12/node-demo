@@ -1,0 +1,351 @@
+### 🚀 Comprehensive API Tests - Updated with CORS, CQRS & No UID
+### Last Updated: After implementing CORS, CQRS, Mobile-First Feed Service, and removing redundant UID field
+### ✅ MAJOR CHANGE: No more UID field required! MongoDB _id is used as the primary identifier
+
+# Variables
+@baseUrl = http://localhost:3000/api/v1
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NTg0Y2YxOWUxYWEzYzZlYzRlMWM1ZiIsImVtYWlsIjoiamFuZS5kb2VAZXhhbXBsZS5jb20iLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUwNzQ4MzIwLCJleHAiOjE3NTA3NDkyMjB9.lC7SxMSAQYuwqB4RoGBln5S3RAkVN5nmX8qdBudAAv8
+@fashionStoreId = 6855409cffbc30794fb9aed9
+@electronicsStoreId = 685540bcffbc30794fb9aedb
+@beautyStoreId = 685540f6ffbc30794fb9aee3
+
+###############################################################################
+# 🔐 AUTHENTICATION TESTS
+###############################################################################
+
+### 1. Create New User (NO UID REQUIRED - MongoDB _id is used)
+POST {{baseUrl}}/auth/users
+Content-Type: application/json
+
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "password": "herSecurePassword!123",
+  "role": "seller",
+  "profileImage": "https://example.com/path/to/profile.jpg",
+  "bio": "Experienced seller specializing in handmade crafts."
+}
+
+### 2. Login to get access token (COPY TOKEN FROM RESPONSE)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "quick@test.com",
+  "password": "QuickTest123!"
+}
+
+### 3. Login with New User (No UID needed)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "jane.doe@example.com",
+  "password": "herSecurePassword!123"
+}
+
+###############################################################################
+# 👤 USER PROFILE & AUTHENTICATION
+###############################################################################
+
+### 2. Get Current User Profile (/me endpoint) - NEW!
+GET {{baseUrl}}/auth/me
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# 🏥 SYSTEM HEALTH & MONITORING (NEW - CQRS)
+###############################################################################
+
+### 3. CQRS Health Check
+GET {{baseUrl}}/feed/health
+Content-Type: application/json
+
+### 4. CQRS System Statistics
+GET {{baseUrl}}/feed/stats
+Content-Type: application/json
+
+###############################################################################
+# 📂 BASIC INFORMATION (PUBLIC)
+###############################################################################
+
+### 4. Get Available Categories (Public)
+GET {{baseUrl}}/feed/categories
+Content-Type: application/json
+
+###############################################################################
+# 📱 MOBILE FEED TESTS (No Pagination - Mobile First)
+###############################################################################
+
+### 5. Get All Products Feed (User opens app)
+GET {{baseUrl}}/feed/personalized
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 6. Get Fashion Feed (User taps Fashion tab)
+GET {{baseUrl}}/feed/personalized?category=fashion
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 7. Get Electronics Feed (User taps Electronics tab)
+GET {{baseUrl}}/feed/personalized?category=electronics
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 8. Get Beauty Feed (User taps Beauty tab)
+GET {{baseUrl}}/feed/personalized?category=beauty
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 9. Get Home Decor Feed (User taps Home Decor tab)
+GET {{baseUrl}}/feed/personalized?category=home-decor
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# 🔥 TRENDING FEED (PUBLIC - No Auth Required)
+###############################################################################
+
+### 10. Get All Trending Products
+GET {{baseUrl}}/feed/trending
+Content-Type: application/json
+
+### 11. Get Trending Electronics
+GET {{baseUrl}}/feed/trending?category=electronics
+Content-Type: application/json
+
+### 12. Get Trending Fashion
+GET {{baseUrl}}/feed/trending?category=fashion
+Content-Type: application/json
+
+###############################################################################
+# 🎯 ADVANCED FEED FILTERING
+###############################################################################
+
+### 13. Get Reels Only Feed (Video content)
+GET {{baseUrl}}/feed/personalized?reelsOnly=true
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 14. Get Popular Fashion Products
+GET {{baseUrl}}/feed/personalized?category=fashion&sortBy=popular
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 15. Get Trending Electronics with Reels
+GET {{baseUrl}}/feed/personalized?category=electronics&sortBy=trending&reelsOnly=true
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 16. Get Products by Subcategory
+GET {{baseUrl}}/feed/personalized?category=electronics&subCategory=smartphones
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 17. Location-Based Feed (Near Mumbai)
+GET {{baseUrl}}/feed/personalized?lat=19.0760&lng=72.8777&maxDistance=20
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# 👥 STORE FOLLOWING (CQRS Commands)
+###############################################################################
+
+### 18. Follow Fashion Store
+POST {{baseUrl}}/feed/follow-store
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "storeId": "{{fashionStoreId}}"
+}
+
+### 19. Follow Electronics Store
+POST {{baseUrl}}/feed/follow-store
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "storeId": "{{electronicsStoreId}}"
+}
+
+### 20. Follow Beauty Store
+POST {{baseUrl}}/feed/follow-store
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "storeId": "{{beautyStoreId}}"
+}
+
+### 21. Unfollow Fashion Store
+DELETE {{baseUrl}}/feed/follow-store
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "storeId": "{{fashionStoreId}}"
+}
+
+###############################################################################
+# ⚙️ USER PREFERENCES (CQRS Commands & Queries)
+###############################################################################
+
+### 22. Get User Feed Preferences
+GET {{baseUrl}}/feed/preferences
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 23. Update Category Preferences
+PUT {{baseUrl}}/feed/preferences
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "categories": ["fashion", "electronics", "beauty"]
+}
+
+### 24. Update Preferences with Settings
+PUT {{baseUrl}}/feed/preferences
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "categories": ["fashion", "electronics", "beauty", "home-decor"],
+  "settings": {
+    "sortBy": "trending",
+    "maxDistance": 30
+  }
+}
+
+###############################################################################
+# 🧪 CORS TESTING
+###############################################################################
+
+### 25. CORS Preflight Test (OPTIONS)
+OPTIONS {{baseUrl}}/feed/trending
+Origin: http://localhost:3001
+Access-Control-Request-Method: GET
+Access-Control-Request-Headers: Authorization
+
+### 26. Cross-Origin Request Test
+GET {{baseUrl}}/feed/trending
+Origin: http://localhost:3001
+Content-Type: application/json
+
+###############################################################################
+# 📊 TESTING PERSONALIZATION AFTER FOLLOWING STORES
+###############################################################################
+
+### 27. Test Personalized Feed After Following Stores (Should show higher scores)
+GET {{baseUrl}}/feed/personalized
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 28. Test Fashion Feed After Following Fashion Store (Should rank higher)
+GET {{baseUrl}}/feed/personalized?category=fashion
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# 🔄 CQRS COMMAND TESTING
+###############################################################################
+
+### 29. Test Multiple Store Follows (Batch Commands)
+POST {{baseUrl}}/feed/follow-store
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "storeId": "{{fashionStoreId}}"
+}
+
+###
+POST {{baseUrl}}/feed/follow-store
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "storeId": "{{electronicsStoreId}}"
+}
+
+### 30. Test Feed After Multiple Follows (Should show personalized scores)
+GET {{baseUrl}}/feed/personalized
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# 📱 MOBILE APP SIMULATION
+###############################################################################
+
+### 31. Simulate Mobile App Opening (Get all categories first)
+GET {{baseUrl}}/feed/categories
+Content-Type: application/json
+
+### 32. Simulate User Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "quick@test.com",
+  "password": "QuickTest123!"
+}
+
+### 33. Simulate Loading Initial Feed
+GET {{baseUrl}}/feed/personalized
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 34. Simulate Category Tab Switch (Fashion)
+GET {{baseUrl}}/feed/personalized?category=fashion
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 35. Simulate Category Tab Switch (Electronics)
+GET {{baseUrl}}/feed/personalized?category=electronics
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+###############################################################################
+# 📋 EXPECTED RESPONSE FORMATS
+###############################################################################
+
+# Personalized Feed Response (No Pagination):
+# {
+#   "success": true,
+#   "message": "Personalized feed retrieved successfully",
+#   "data": {
+#     "products": [
+#       {
+#         "_id": "68554142ffbc30794fb9aee8",
+#         "title": "Summer Floral Dress",
+#         "category": "fashion",
+#         "price": { "original": 2500, "currency": "INR" },
+#         "store": { "name": "Trendy Fashion Hub", "category": "fashion" },
+#         "_personalizedScore": 23
+#       }
+#     ],
+#     "count": 1,
+#     "filters": { "category": "fashion", "sortBy": "recent" }
+#   }
+# }
+
+# CQRS Health Response:
+# {
+#   "success": true,
+#   "message": "Feed service is healthy",
+#   "data": {
+#     "status": "healthy",
+#     "tests": { "queryBus": true, "commandBus": true }
+#   }
+# }
+
+###############################################################################
+# 🎯 MOBILE USAGE PATTERNS
+###############################################################################
+
+# 1. App Launch: GET /feed/categories → GET /feed/personalized
+# 2. Category Switch: GET /feed/personalized?category=fashion
+# 3. Follow Store: POST /feed/follow-store → GET /feed/personalized (updated scores)
+# 4. Trending View: GET /feed/trending
+# 5. Preferences: GET /feed/preferences → PUT /feed/preferences

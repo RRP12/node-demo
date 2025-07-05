@@ -1,0 +1,45 @@
+{
+  "name": "Node.js E-commerce API",
+  "description": "Complete e-commerce backend with authentication, stores, products, and media upload",
+  "type": "node.js",
+  "framework": "express",
+  "database": "mongodb",
+  "main_files": [
+    "app.js",
+    "Auth/auth-server.js",
+    "Store/routes/storeRouter.js",
+    "Product/routes/productRouter.js",
+    "media-upload/routes/routes.js"
+  ],
+  "schemas": [
+    "Auth/schema.js",
+    "Store/StoreSchema.js", 
+    "Product/productSchema.js",
+    "Auth/refreshTokenSchema.js"
+  ],
+  "middleware": [
+    "middleware/auth.js",
+    "middleware/validation.js"
+  ],
+  "config": [
+    "categories.js",
+    "config.js",
+    "validateEnv.js"
+  ],
+  "key_features": [
+    "JWT Authentication with 15-min expiry",
+    "Refresh token management",
+    "Role-based access (customer/seller)",
+    "Store creation with categories and location",
+    "Product creation with media and reels",
+    "Cloudinary media upload",
+    "Input validation and sanitization",
+    "MongoDB with Mongoose ODM"
+  ],
+  "api_endpoints": {
+    "auth": "/api/v1/auth",
+    "stores": "/api/v1/stores", 
+    "products": "/api/v1/products",
+    "media": "/api/v1/media"
+  }
+}

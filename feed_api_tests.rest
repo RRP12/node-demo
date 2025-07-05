@@ -1,0 +1,146 @@
+### Feed Service API Tests
+
+# Variables
+@baseUrl = http://localhost:3000/api/v1
+@accessToken = YOUR_ACCESS_TOKEN_HERE
+
+### 1. Get Available Categories
+GET {{baseUrl}}/feed/categories
+Content-Type: application/json
+
+### 2. Get Fashion Feed (User selects Fashion from UI)
+GET {{baseUrl}}/feed/personalized?category=fashion
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 3. Get Electronics Feed (User selects Electronics from UI)
+GET {{baseUrl}}/feed/personalized?category=electronics
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 4. Get Beauty Feed (User selects Beauty from UI)
+GET {{baseUrl}}/feed/personalized?category=beauty
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 5. Get Trending Feed (Public - No Auth Required)
+GET {{baseUrl}}/feed/trending
+Content-Type: application/json
+
+### 6. Get Trending Feed with Category Filter
+GET {{baseUrl}}/feed/trending?category=electronics
+Content-Type: application/json
+
+### 3. Get Personalized Feed (Requires Authentication)
+GET {{baseUrl}}/feed/personalized
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 4. Get Personalized Feed with Filters
+GET {{baseUrl}}/feed/personalized?category=fashion&sortBy=popular&page=1&limit=20&reelsOnly=true
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 5. Get Personalized Feed with Location
+GET {{baseUrl}}/feed/personalized?lat=19.0760&lng=72.8777&maxDistance=10&sortBy=recent
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 6. Follow a Store
+POST {{baseUrl}}/feed/follow-store
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "storeId": "STORE_ID_HERE"
+}
+
+### 7. Unfollow a Store
+DELETE {{baseUrl}}/feed/follow-store
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "storeId": "STORE_ID_HERE"
+}
+
+### 8. Update Feed Preferences
+PUT {{baseUrl}}/feed/preferences
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "categories": ["fashion", "electronics", "beauty"],
+  "settings": {
+    "sortBy": "popular",
+    "maxDistance": 25
+  }
+}
+
+### 9. Get User Feed Preferences
+GET {{baseUrl}}/feed/preferences
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 10. Get Available Categories
+GET {{baseUrl}}/feed/categories
+Content-Type: application/json
+
+### 11. Advanced Personalized Feed Query
+GET {{baseUrl}}/feed/personalized?category=electronics&subCategory=smartphones&sortBy=trending&lat=19.0760&lng=72.8777&maxDistance=20
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 12. Reels Only Feed
+GET {{baseUrl}}/feed/personalized?reelsOnly=true&sortBy=recent
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Simple Response Format (No Pagination):
+# {
+#   "success": true,
+#   "message": "Personalized feed retrieved successfully",
+#   "data": {
+#     "products": [
+#       {
+#         "_id": "68554142ffbc30794fb9aee8",
+#         "title": "Summer Floral Dress",
+#         "description": "Beautiful summer dress with floral patterns",
+#         "category": "fashion",
+#         "subCategory": "dresses",
+#         "price": {
+#           "original": 2500,
+#           "currency": "INR"
+#         },
+#         "media": {
+#           "images": ["https://example.com/dress1.jpg"],
+#           "reels": [
+#             {
+#               "url": "https://example.com/dress_reel.mp4",
+#               "thumbnail": "https://example.com/dress_thumb.jpg",
+#               "caption": "Perfect summer dress for any occasion!"
+#             }
+#           ]
+#         },
+#         "store": {
+#           "_id": "6855409cffbc30794fb9aed9",
+#           "name": "Trendy Fashion Hub",
+#           "category": "fashion"
+#         },
+#         "_personalizedScore": 23
+#       }
+#     ],
+#     "count": 1,
+#     "filters": {
+#       "category": "fashion",
+#       "sortBy": "recent",
+#       "reelsOnly": false
+#     }
+#   }
+# }
+#
+# Mobile App Usage:
+# 1. Get all fashion products: GET /feed/personalized?category=fashion
+# 2. Get all electronics: GET /feed/personalized?category=electronics
+# 3. Get all products: GET /feed/personalized
+# 4. Simple and fast - no pagination complexity!
